@@ -1,10 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'blocs/counter/counter_bloc.dart';
 import 'blocs/theme/theme_bloc.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorage.webStorageDirectory
+        : await getApplicationDocumentsDirectory(),
+  );
   runApp(const MyApp());
 }
 
@@ -75,7 +84,9 @@ class MyHomePage extends StatelessWidget {
           ),
           const SizedBox(width: 5.0),
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              HydratedBloc.storage.clear();
+            },
             child: const Icon(Icons.delete_forever),
           ),
         ],
